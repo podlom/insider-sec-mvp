@@ -1,10 +1,13 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
-    public function up(): void {
+return new class extends Migration
+{
+    public function up(): void
+    {
         Schema::create('metrics_snapshots', function (Blueprint $t) {
             $t->date('date')->primary();
             $t->unsignedInteger('incidents_total');
@@ -19,16 +22,18 @@ return new class extends Migration {
         Schema::create('risk_register', function (Blueprint $t) {
             $t->uuid('id')->primary();
             $t->string('title');
-            $t->enum('category', ['insider','availability','integrity','confidentiality','compliance','supply_chain']);
+            $t->enum('category', ['insider', 'availability', 'integrity', 'confidentiality', 'compliance', 'supply_chain']);
             $t->unsignedTinyInteger('likelihood');
             $t->unsignedTinyInteger('impact');
             $t->unsignedTinyInteger('rating');
             $t->text('treatment')->nullable();
-            $t->enum('status', ['identified','accepted','mitigating','transferred','closed'])->index();
+            $t->enum('status', ['identified', 'accepted', 'mitigating', 'transferred', 'closed'])->index();
             $t->timestamps();
         });
     }
-    public function down(): void {
+
+    public function down(): void
+    {
         Schema::dropIfExists('risk_register');
         Schema::dropIfExists('metrics_snapshots');
     }

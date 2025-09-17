@@ -11,9 +11,10 @@
         "laravel/framework": "^11.0"
     },
     "require-dev": {
-        "laravel/sanctum": "^4.0",
+        "danharrin/livewire-rate-limiting": "^1.3",
         "laravel/breeze": "^2.3",
-        "danharrin/livewire-rate-limiting": "^1.3"
+        "laravel/pint": "*",
+        "laravel/sanctum": "^4.0"
     },
     "autoload": {
         "psr-4": {

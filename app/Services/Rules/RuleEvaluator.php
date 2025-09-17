@@ -1,6 +1,10 @@
 <?php
+
 namespace App\Services\Rules;
-use App\Models\{DetectionRule, SecurityEvent, RuleMatch};
+
+use App\Models\DetectionRule;
+use App\Models\RuleMatch;
+use App\Models\SecurityEvent;
 
 class RuleEvaluator
 {
@@ -12,12 +16,13 @@ class RuleEvaluator
             if ($this->match($rule->conditions, $event)) {
                 $score = $this->score($rule, $event);
                 $matches[] = RuleMatch::create([
-                    'rule_id'  => $rule->id,
+                    'rule_id' => $rule->id,
                     'event_id' => $event->id,
-                    'score'    => $score,
+                    'score' => $score,
                 ]);
             }
         }
+
         return $matches;
     }
 
@@ -27,24 +32,28 @@ class RuleEvaluator
         $conds = $conditions['rules'] ?? [];
         $results = array_map(function ($c) use ($event) {
             $field = data_get($event->toArray() + ['payload' => $event->payload], $c['field'] ?? '');
-            $op = $c['op'] ?? 'eq'; $val = $c['value'] ?? null;
+            $op = $c['op'] ?? 'eq';
+            $val = $c['value'] ?? null;
+
             return match ($op) {
                 'eq' => $field == $val, 'neq' => $field != $val,
                 'gt' => $field > $val,  'gte' => $field >= $val,
                 'lt' => $field < $val,  'lte' => $field <= $val,
-                'in' => in_array($field, (array)$val, true),
+                'in' => in_array($field, (array) $val, true),
                 'regex' => is_string($field) && @preg_match($val, $field) === 1,
                 'contains' => is_string($field) && is_string($val) && str_contains($field, $val),
                 default => false,
             };
         }, $conds);
-        return $logic === 'all' ? !in_array(false, $results, true) : in_array(true, $results, true);
+
+        return $logic === 'all' ? ! in_array(false, $results, true) : in_array(true, $results, true);
     }
 
     protected function score(DetectionRule $rule, SecurityEvent $event): int
     {
-        $base = (int)($rule->weight ?? 10);
+        $base = (int) ($rule->weight ?? 10);
         $sens = (int) optional($event->asset)->sensitivity; // 1..5
+
         return $base + $sens * 5;
     }
 }

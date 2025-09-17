@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Models\SecurityEvent;
 use App\Services\Rules\RuleEvaluator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/v1/events', function (Request $request, RuleEvaluator $evaluator) {
@@ -17,10 +17,10 @@ Route::middleware('auth:sanctum')->group(function () {
         ]);
 
         $employee = $data['employee_email']
-            ? App\Models\Employee::firstOrCreate(['email' => $data['employee_email']], ['name'=>$data['employee_email']])
+            ? App\Models\Employee::firstOrCreate(['email' => $data['employee_email']], ['name' => $data['employee_email']])
             : null;
         $asset = $data['asset_name']
-            ? App\Models\Asset::firstOrCreate(['name' => $data['asset_name']], ['type'=>'file_share','sensitivity'=>3])
+            ? App\Models\Asset::firstOrCreate(['name' => $data['asset_name']], ['type' => 'file_share', 'sensitivity' => 3])
             : null;
 
         $event = SecurityEvent::create([
