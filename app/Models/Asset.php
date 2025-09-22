@@ -5,10 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Asset extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasUuids;
+
+    // Tell Eloquent this is a string (not auto-incrementing)
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'name',
@@ -22,10 +27,6 @@ class Asset extends Model
         'owner_department',
         'notes',
     ];
-
-    public $incrementing = false;
-
-    protected $keyType = 'string';
 
     protected $casts = [
         'purchased_at' => 'date',
